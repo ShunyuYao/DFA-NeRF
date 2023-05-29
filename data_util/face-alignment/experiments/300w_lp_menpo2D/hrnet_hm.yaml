@@ -1,0 +1,144 @@
+AUTO_RESUME: false
+CUDNN:
+  BENCHMARK: true
+  DETERMINISTIC: false
+  ENABLED: true
+DATA_DIR: ''
+GPUS: (0,)
+OUTPUT_DIR: 'output'
+LOG_DIR: 'log'
+WORKERS: 16
+PRINT_FREQ: 100
+
+DATASET:
+  COLOR_RGB: True
+  DATASET: 'face_300w_lp_menpo2D'
+  ROOT: 'data/coco/'
+  TEST_SET: 'val2017'
+  TRAIN_SET: 'train2017'
+  FLIP: true
+  NUM_JOINTS_HALF_BODY: 8
+  ROT_FACTOR: 45
+  SCALE_FACTOR: 0.40
+  PROB_HALF_BODY: 0.55
+  TRAIN_FACE_HM_THRE: 0.5
+FACE_DATASET:
+  DATASET: 'face_300w_lp_menpo2D'
+  ROOT: 'data/300w_lp_menpo2D'
+  FLIP: true
+  SCALE_FACTOR: 0.25
+  ROT_FACTOR: 30
+  SHIFT_FACTOR: 0.2
+  BRIGHTNESS_FACTOR: 0.3
+  CONTRAST_FACTOR: 0.3
+  EXTRA:
+    TRAINSET_300W: 'data/300w_lp_menpo2D/face_landmarks_300w_lp_train.csv'
+    TRAINSET_MENPO: 'data/menpo2D/Menpo2D_semifrontal_train_new.csv'
+    TESTSET_300W: 'data/300w_lp_menpo2D/face_landmarks_300w_lp_test.csv'
+    TESTSET_MENPO: 'data/menpo2D/Menpo2D_semifrontal_test_new.csv'
+MODEL:
+  INIT_WEIGHTS: true
+  NAME: 'face_hrnet'
+  PRETRAINED: 'models/hrnetv2_w18_imagenet_pretrained.pth'
+  IMAGE_SIZE:
+  - 256
+  - 256
+  HEATMAP_SIZE:
+  - 64
+  - 64
+  SIGMA: 2.0
+  FACE_SIGMA: 2.0
+  HEATMAP_EN: True
+  HEATMAP_DE: True
+  HEATMAP_DM: True
+  FACE_POSE_COMBINE: False
+  NUM_JOINTS: 68
+  NUM_FACE_JOINTS: 68
+  NUM_POSE_JOINTS: 68
+  TARGET_TYPE: 'gaussian'
+  EXTRA:
+    USE_REGRESS_BRANCH: False
+    USE_HEATMAP_BRANCH: True
+    USE_BOUNDARY_MAP: False
+    USE_AUX_HEAD: False
+    FINAL_CONV_KERNEL: 1
+    STAGE2:
+      NUM_MODULES: 1
+      NUM_BRANCHES: 2
+      BLOCK: BASIC
+      NUM_BLOCKS:
+        - 4
+        - 4
+      NUM_CHANNELS:
+        - 18
+        - 36
+      FUSE_METHOD: SUM
+    STAGE3:
+      NUM_MODULES: 4
+      NUM_BRANCHES: 3
+      BLOCK: BASIC
+      NUM_BLOCKS:
+        - 4
+        - 4
+        - 4
+      NUM_CHANNELS:
+        - 18
+        - 36
+        - 72
+      FUSE_METHOD: SUM
+    STAGE4:
+      NUM_MODULES: 3
+      NUM_BRANCHES: 4
+      BLOCK: BASIC
+      NUM_BLOCKS:
+        - 4
+        - 4
+        - 4
+        - 4
+      NUM_CHANNELS:
+        - 18
+        - 36
+        - 72
+        - 144
+      FUSE_METHOD: SUM
+
+LOSS:
+  CRITERION: 'mse'
+  USE_TARGET_WEIGHT: true
+  USE_DIFFERENT_JOINTS_WEIGHT: false
+TRAIN:
+  BATCH_SIZE_PER_GPU: 128
+  SHUFFLE: true
+  BEGIN_EPOCH: 0
+  END_EPOCH: 60
+  OPTIMIZER: 'adamW'
+  SCHEDULER: 'ReduceLROnPlateau'
+  SCHEDULER_PATIENCE: 10
+  LR: 0.001
+  LR_FACTOR: 0.1
+  LR_STEP:
+  - 30
+  - 50
+  WD: 0.001
+  GAMMA1: 0.99
+  GAMMA2: 0.0
+  MOMENTUM: 0.9
+  NESTEROV: false
+TEST:
+  BATCH_SIZE_PER_GPU: 64
+  BBOX_THRE: 1.0
+  IMAGE_THRE: 0.0
+  IN_VIS_THRE: 0.2
+  MODEL_FILE: ''
+  NMS_THRE: 1.0
+  OKS_THRE: 0.9
+  FLIP_TEST: false
+  POST_PROCESS: true
+  SHIFT_HEATMAP: true
+  USE_GT_BBOX: true
+DEBUG:
+  DEBUG: true
+  SAVE_BATCH_IMAGES_GT: true
+  SAVE_BATCH_IMAGES_PRED: true
+  SAVE_HEATMAPS_GT: true
+  SAVE_HEATMAPS_PRED: true
