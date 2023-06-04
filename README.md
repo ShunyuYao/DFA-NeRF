@@ -44,6 +44,7 @@ Run the following the command to test the trained models:
   journal={arXiv preprint arXiv:2201.00791},
   year={2022}
 }
+```
 
 ## Acknowledgments
 Most of the codes are referred to [AD-NeRF](https://github.com/YudongGuo/AD-NeRF).
